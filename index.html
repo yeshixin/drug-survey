@@ -2,21 +2,23 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>藥名辨識問卷</title>
+  <title>相似藥名識別結果、喜好問卷</title>
   <style>
     body {
+      font-size: 32px
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 32px;
       background-color: #000; /* 背景改為黑色 */
       color: #fff;
-    }
+    }ㄇ
     h1, h2 {
       text-align: center;
       color: #fff;
     }
     .question-box, .color-box-container {
-      margin: 20px auto;
-      padding: 20px;
+      
+      margin: 32px auto;
+      padding: 32px;
       max-width: 600px;
       background: #fff; /* 保留內容區塊為白色 */
       color: #000;
@@ -26,13 +28,13 @@
     .scale {
       display: flex;
       justify-content: space-between;
-      margin-top: 20px;
+      margin-top: 32px;
     }
     .scale button {
       flex: 1;
       margin: 0 5px;
       padding: 10px;
-      font-size: 16px;
+      font-size: 12px;
       cursor: pointer;
     }
     .color-box {
@@ -41,7 +43,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 32px;
       font-weight: bold;
       border: 2px solid #000;
     }
@@ -57,13 +59,13 @@
       display: block;
       margin: 30px auto;
       padding: 10px 20px;
-      font-size: 16px;
+      font-size: 13px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>藥名辨識問卷</h1>
+  <h1>相似藥名識別結果、喜好問卷</h1>
 
   <!-- Likert 問題區 -->
   <div id="questionSection" class="question-box"></div>
@@ -76,9 +78,10 @@
       <div id="rightBox" class="color-box">RIGHT</div>
     </div>
     <p style="text-align:center;">請按鍵盤「←」選擇左邊，「→」選擇右邊</p>
+    <p style="text-align:center;">請您在以下左右兩組黑字及不同底上的顯示設計，進行兩兩比較之識別喜好選擇</p>
   </div>
 
-  <button id="downloadBtn" class="hidden" onclick="downloadExcel()">下載結果 CSV</button>
+  <button id="downloadBtn" class="hidden" onclick="downloadExcel()">下載問卷數據</button>
 
   <script>
     const questions = [
@@ -105,7 +108,7 @@
         return;
       }
       questionSection.innerHTML = `<p>${currentQ + 1}. ${questions[currentQ]}</p>
-        <p style="text-align:center;">請按鍵盤數字鍵 1–7 作答</p>`;
+        <p style="text-align:center;">請選擇鍵盤數字鍵 非常不同意 <----- 	1	2	3	4	5	6	7	------> 非常同意</p>`;
     }
 
     document.addEventListener("keydown", function(e) {
@@ -138,23 +141,176 @@
     // 顏色配對
     const colorPairsBlack = [
       {
-        left: { text: "Red", bg: "#FFC0C0", textColor: "black" },
-        right: { text: "Blue", bg: "#C0C0FF", textColor: "black" }
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+       {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "black" }
       },
       {
-        left: { text: "Green", bg: "#C0FFC0", textColor: "black" },
-        right: { text: "Yellow", bg: "#FFFFC0", textColor: "black" }
+        left: { text: "White", bg: "#FFFFFF", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFFF", textColor: "black" },
+        right: { text: "White" , bg:"#FFFFFF", textColor: "black" }    
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#FF0000", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF",  textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFFF", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
       }
     ];
 
     const colorPairsWhite = [
       {
-        left: { text: "Red", bg: "red", textColor: "white" },
-        right: { text: "Blue", bg: "blue", textColor: "white" }
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "white" }
       },
       {
-        left: { text: "Green", bg: "green", textColor: "white" },
-        right: { text: "Yellow", bg: "orange", textColor: "white" }
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Black", bg: "#000000", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Green", bg: "#00FF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "white" }
+      },
+      {
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Black", bg: "#000000", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Green", bg: "#00FF00", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
       }
     ];
 
@@ -172,7 +328,7 @@
       colorPhase = phase;
       questionSection.classList.add("hidden");
       colorSection.classList.remove("hidden");
-      phaseTitle.textContent = phase === "black" ? "顏色配對測驗 - 黑字組" : "顏色配對測驗 - 白字組";
+      phaseTitle.textContent = phase === "black" ? "ColorTest顏色配對測驗 - Black黑字組" : "顏色配對測驗 - White白字組";
       colorIndex = 0;
       loadColorPair();
     }
