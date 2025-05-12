@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>相似藥名識別喜好問卷</title>
+  <style>
+    body {
+      font-size: 20px;
+      font-family: Arial, sans-serif;
+      padding: 32px;
+      background-color: #000; /* 背景改為黑色 */
+      color: #fff;
+      height: fit-content;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 22px;
+
+    }
+    .question-box, .color-box-container {
+      font-size: 32px;
+      margin: 32px auto;
+      padding: 32px;
+      max-width: 2000px;
+      max-height: 1600px;
+      background: #000000; /* 保留內容區塊為白色 */
+      color: #ffffff;
+      justify-content: center;
+
+    }
+    .scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+    }
+    .scale button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .color-box {
+      width: 45%;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      font-weight: bold;
+      border: 2px solid #000;
+    }
+    .color-pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hidden {
+      display: none;
+    }
+    #downloadBtn {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>相似藥名識別喜好問卷</h1>
+  
+  <!-- Likert 問題區 --> 
+  <div id="questionSection" class="question-box">
+    
+
+  </div>
+
+  <!-- 顏色配對題區 -->
+  <div id="colorSection" class="question-box hidden">
+    <h2 id="phaseTitle"></h2>
+    <div class="color-pair">
+      <div id="leftBox" class="color-box">LEFT</div>
+      <div id="rightBox" class="color-box">RIGHT</div>
+    </div>
+    <p style="text-align:center;">請利用左右手控制器選擇你認為更有利於相似藥名辨識的設計</p>
+    
+  </div>
+ 
+
+  <button id="downloadBtn" class="hidden" onclick="downloadExcel()">下載問卷數據</button>
+
+  <script>
+    const questions = [
+      "我感覺辨識藥名的速度隨著測驗次數的增加而變快。　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "實驗中試驗所出現的藥名，我認為是很常見的。　　　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我對於識別實驗中試驗所出現的藥名，是非常有自信的。　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為以大寫的方式強調關鍵處能幫助我更快、更準確地辨識藥名。　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為使用不同文字顏色與底色的組合，會對我的辨識效率產生影響。　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為擴增實境的應用，是未來的趨勢。　　　　　　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為我能夠適應未來導入智慧眼鏡在工作場所並輔助業務的進行。　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "相較於使用電腦螢幕顯示藥物資訊，我認為使用智慧眼鏡的困難程度。　　　　　　　　　　　　　　　1分非常簡單 至 7分非常困難　　　　　　　請選擇分數",
+      "相較於使用電腦螢幕顯示藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度。　　　　　　　　　　　　　1分非輕鬆 至 7分非常困難　　　　　　　　請選擇分數",
+      "相較於使用紙本提供藥物資訊，我認為使用智慧眼鏡的困難程度。　　　　　　　　　　　　　　　　　1分非常簡單 至 7分非常困難　　　　　　　請選擇分數",
+      "相較於使用紙本提供藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度。　　　　　　　　　　　　　　　1分非常輕鬆 至 7分非常疲勞　　　　　　　請選擇分數",
+    ];
+
+    const answers = [];
+    let currentQ = 0;
+    const questionSection = document.getElementById("questionSection");
+
+    function showQuestion() {
+      if (currentQ >= questions.length) {
+        startColorTestPhase("black");
+        return;
+      }
+      questionSection.innerHTML = `<p>${currentQ + 1}. ${questions[currentQ]}</p>
+        <p style="text-align:center;">　　　　　<img src="image/text.png" alt="問卷說明圖片" style="max-width: 100%; height: auto" /></p>`;
+    
+    }
+
+    document.addEventListener("keydown", function(e) {
+      if (!questionSection.classList.contains("hidden")) {
+        if (e.key >= '1' && e.key <= '7') {
+          answers.push(parseInt(e.key));
+          currentQ++;
+          showQuestion();
+        }
+      } else {
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+          let pairs = (colorPhase === "black") ? colorPairsBlack : colorPairsWhite;
+          const pair = pairs[colorIndex];
+          const record = {
+            left: `${pair.left.text} (${pair.left.textColor} on ${pair.left.bg})`,
+            right: `${pair.right.text} (${pair.right.textColor} on ${pair.right.bg})`,
+            choice: (e.key === "ArrowLeft") ? "left" : "right"
+          };
+          if (colorPhase === "black") {
+            colorChoicesBlack.push(record);
+          } else {
+            colorChoicesWhite.push(record);
+          }
+          colorIndex++;
+          loadColorPair();
+        }
+      }
+    });
+
+    // 顏色配對
+    const colorPairsBlack = [
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+       {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "black" }
+      },
+      {
+        left: { text: "White", bg: "#FFFFFF", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "black" },
+        right: { text: "White" , bg:"#FFFFFF", textColor: "black" }    
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF",  textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "black" },
+        right: { text: "Green", bg: "#00FF00", textColor: "black" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "black" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
+      },
+      {
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "black" },
+        right: { text: "White", bg: "#FFFFFF", textColor: "black" }
+      }
+    ];
+
+    const colorPairsWhite = [
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "white" }
+      },
+      {
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Black", bg: "#000000", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Green", bg: "#00FF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Blue", bg: "#0000FF", textColor: "white" }
+      },
+      {
+        left: { text: "Magenta", bg: "#FF00FF", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "white" },
+        right: { text: "Red", bg: "#FF0000", textColor: "white" }
+      },
+      {
+        left: { text: "Black", bg: "#000000", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Cyan", bg: "#00FFFF", textColor: "white" }
+      },
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      {
+        left: { text: "Yellow", bg: "#FFFF00", textColor: "white" },
+        right: { text: "Green", bg: "#00FF00", textColor: "white" }
+      },
+      {
+        left: { text: "Blue", bg: "#0000FF", textColor: "white" },
+        right: { text: "Yellow", bg: "#FFFF00", textColor: "white" }
+      },
+      {
+        left: { text: "Green", bg: "#00FF00", textColor: "white" },
+        right: { text: "Black", bg: "#000000", textColor: "white" }
+      },
+      
+      {
+        left: { text: "Red", bg: "#FF0000", textColor: "white" },
+        right: { text: "Magenta", bg: "#FF00FF", textColor: "white" }
+      }
+    ];
+
+    let colorPhase = "black";
+    let colorIndex = 0;
+    const colorChoicesBlack = [];
+    const colorChoicesWhite = [];
+
+    const colorSection = document.getElementById("colorSection");
+    const phaseTitle = document.getElementById("phaseTitle");
+    const leftBox = document.getElementById("leftBox");
+    const rightBox = document.getElementById("rightBox");
+
+    function startColorTestPhase(phase) {
+      colorPhase = phase;
+      questionSection.classList.add("hidden");
+      colorSection.classList.remove("hidden");
+      phaseTitle.textContent = phase === "black" ? "     " : "     ";
+      colorIndex = 0;
+      loadColorPair();
+    }
+
+    function loadColorPair() {
+      let pairs = (colorPhase === "black") ? colorPairsBlack : colorPairsWhite;
+      if (colorIndex >= pairs.length) {
+        if (colorPhase === "black") {
+          startColorTestPhase("white");
+        } else {
+          colorSection.innerHTML = "<h2 style='text-align:center;'>所有問卷完成</h2>";
+          document.getElementById("downloadBtn").classList.remove("hidden");
+        }
+        return;
+      }
+      const pair = pairs[colorIndex];
+      leftBox.textContent = pair.left.text;
+      leftBox.style.backgroundColor = pair.left.bg;
+      leftBox.style.color = pair.left.textColor;
+      rightBox.textContent = pair.right.text;
+      rightBox.style.backgroundColor = pair.right.bg;
+      rightBox.style.color = pair.right.textColor;
+    }
+
+    function downloadExcel() {
+      let csv = 'Question number, answer\n';
+      answers.forEach((a, i) => {
+        csv += `${i + 1},${a}\n`;
+      });
+      csv += '\n【 black color group matching 】\nLeft, right, select\n';
+      colorChoicesBlack.forEach(r => {
+
+        csv += `${r.left},${r.right},${r.choice}\n`;
+      });
+      csv += '\n【 white color group matching 】\nLeft, right, select\n';
+      colorChoicesWhite.forEach(r => {
+        csv += `${r.left},${r.right},${r.choice}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Questionnaire results.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
