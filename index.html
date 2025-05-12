@@ -2,28 +2,32 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <title>相似藥名識別結果、喜好問卷</title>
+  <title>相似藥名識別喜好問卷</title>
   <style>
     body {
-      font-size: 32px
+      font-size: 32px;
       font-family: Arial, sans-serif;
-      padding: 32px;
+      padding: 50px;
       background-color: #000; /* 背景改為黑色 */
       color: #fff;
-    }ㄇ
+      height: fit-content;
+    }
     h1, h2 {
       text-align: center;
-      color: #fff;
+      color: #ffffff;
+      font-size: 32px;
+
     }
     .question-box, .color-box-container {
-      
+      font-size: 45px;
       margin: 32px auto;
       padding: 32px;
-      max-width: 600px;
-      background: #fff; /* 保留內容區塊為白色 */
-      color: #000;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      max-width: 2000px;
+      max-height: 2000px;
+      background: #000000; /* 保留內容區塊為白色 */
+      color: #ffffff;
+      justify-content: center;
+
     }
     .scale {
       display: flex;
@@ -39,11 +43,11 @@
     }
     .color-box {
       width: 45%;
-      height: 100px;
+      height: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 50px;
       font-weight: bold;
       border: 2px solid #000;
     }
@@ -65,10 +69,13 @@
   </style>
 </head>
 <body>
-  <h1>相似藥名識別結果、喜好問卷</h1>
+  <h1>相似藥名識別喜好問卷</h1>
+  
+  <!-- Likert 問題區 --> 
+  <div id="questionSection" class="question-box">
+    
 
-  <!-- Likert 問題區 -->
-  <div id="questionSection" class="question-box"></div>
+  </div>
 
   <!-- 顏色配對題區 -->
   <div id="colorSection" class="question-box hidden">
@@ -77,25 +84,26 @@
       <div id="leftBox" class="color-box">LEFT</div>
       <div id="rightBox" class="color-box">RIGHT</div>
     </div>
-    <p style="text-align:center;">請按鍵盤「←」選擇左邊，「→」選擇右邊</p>
-    <p style="text-align:center;">請您在以下左右兩組黑字及不同底上的顯示設計，進行兩兩比較之識別喜好選擇</p>
+    <p style="text-align:center;">請利用左右手控制器選擇你認為更有利於相似藥名辨識的設計</p>
+    
   </div>
+ 
 
   <button id="downloadBtn" class="hidden" onclick="downloadExcel()">下載問卷數據</button>
 
   <script>
     const questions = [
-      "我感覺辨識藥名的速度隨著測驗次數的增加而變快",
-      "實驗中試驗所出現的藥名，我認為是很常見的",
-      "我對於識別實驗中試驗所出現的藥名，是非常有自信的",
-      "我認為以大寫的方式強調關鍵處能幫助我更快、更準確地辨識藥名",
-      "我認為使用不同文字顏色與底色的組合，會對我的辨識效率產生影響",
-      "我認為擴增實境的應用，是未來的趨勢",
-      "我認為我能夠適應未來導入智慧眼鏡在工作場所並輔助業務的進行",
-      "相較於使用電腦螢幕顯示藥物資訊，我認為使用智慧眼鏡的困難程度",
-      "相較於使用電腦螢幕顯示藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度",
-      "相較於使用紙本提供藥物資訊，我認為使用智慧眼鏡的困難程度",
-      "相較於使用紙本提供藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度"
+      "我感覺辨識藥名的速度隨著測驗次數的增加而變快。　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "實驗中試驗所出現的藥名，我認為是很常見的。　　　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我對於識別實驗中試驗所出現的藥名，是非常有自信的。　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為以大寫的方式強調關鍵處能幫助我更快、更準確地辨識藥名。　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為使用不同文字顏色與底色的組合，會對我的辨識效率產生影響。　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為擴增實境的應用，是未來的趨勢。　　　　　　　　　　　　　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "我認為我能夠適應未來導入智慧眼鏡在工作場所並輔助業務的進行。　　　　　　　　　　　　　　　　1分非常不同意 至 7分非常同意　　　　　　請選擇分數",
+      "相較於使用電腦螢幕顯示藥物資訊，我認為使用智慧眼鏡的困難程度。　　　　　　　　　　　　　　　1分非常簡單 至 7分非常困難　　　　　　　請選擇分數",
+      "相較於使用電腦螢幕顯示藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度。　　　　　　　　　　　　　1分非輕鬆 至 7分非常困難　　　　　　　　請選擇分數",
+      "相較於使用紙本提供藥物資訊，我認為使用智慧眼鏡的困難程度。　　　　　　　　　　　　　　　　　1分非常簡單 至 7分非常困難　　　　　　　請選擇分數",
+      "相較於使用紙本提供藥物資訊，我覺得使用智慧眼鏡的用眼疲勞程度。　　　　　　　　　　　　　　　1分非常輕鬆 至 7分非常疲勞　　　　　　　請選擇分數",
     ];
 
     const answers = [];
@@ -108,7 +116,8 @@
         return;
       }
       questionSection.innerHTML = `<p>${currentQ + 1}. ${questions[currentQ]}</p>
-        <p style="text-align:center;">請選擇鍵盤數字鍵 非常不同意 <----- 	1	2	3	4	5	6	7	------> 非常同意</p>`;
+        <p style="text-align:center;">　　　　　<img src="image/text.png" alt="問卷說明圖片" style="max-width: 100%; height: auto" /></p>`;
+    
     }
 
     document.addEventListener("keydown", function(e) {
@@ -161,7 +170,7 @@
         right: { text: "Cyan", bg: "#00FFFF", textColor: "black" }
       },
       {
-        left: { text: "Cyan", bg: "#00FFFFF", textColor: "black" },
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "black" },
         right: { text: "White" , bg:"#FFFFFF", textColor: "black" }    
       },
       {
@@ -173,7 +182,7 @@
         right: { text: "Yellow", bg: "#FFFF00", textColor: "black" }
       },
       {
-        left: { text: "Blue", bg: "#FF0000", textColor: "black" },
+        left: { text: "Blue", bg: "#0000FF", textColor: "black" },
         right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
       },
       {
@@ -201,7 +210,7 @@
         right: { text: "Magenta", bg: "#FF00FF", textColor: "black" }
       },
       {
-        left: { text: "Cyan", bg: "#00FFFFF", textColor: "black" },
+        left: { text: "Cyan", bg: "#00FFFF", textColor: "black" },
         right: { text: "Green", bg: "#00FF00", textColor: "black" }
       },
       {
@@ -328,7 +337,7 @@
       colorPhase = phase;
       questionSection.classList.add("hidden");
       colorSection.classList.remove("hidden");
-      phaseTitle.textContent = phase === "black" ? "ColorTest顏色配對測驗 - Black黑字組" : "顏色配對測驗 - White白字組";
+      phaseTitle.textContent = phase === "black" ? "     " : "     ";
       colorIndex = 0;
       loadColorPair();
     }
@@ -339,7 +348,7 @@
         if (colorPhase === "black") {
           startColorTestPhase("white");
         } else {
-          colorSection.innerHTML = "<h2 style='text-align:center;'>所有測驗完成</h2>";
+          colorSection.innerHTML = "<h2 style='text-align:center;'>所有問卷完成</h2>";
           document.getElementById("downloadBtn").classList.remove("hidden");
         }
         return;
@@ -354,15 +363,16 @@
     }
 
     function downloadExcel() {
-      let csv = '問題編號,回答\n';
+      let csv = 'Question number, answer\n';
       answers.forEach((a, i) => {
         csv += `${i + 1},${a}\n`;
       });
-      csv += '\n【黑字組顏色配對】\n左邊,右邊,選擇\n';
+      csv += '\n【 black color group matching 】\nLeft, right, select\n';
       colorChoicesBlack.forEach(r => {
+
         csv += `${r.left},${r.right},${r.choice}\n`;
       });
-      csv += '\n【白字組顏色配對】\n左邊,右邊,選擇\n';
+      csv += '\n【 white color group matching 】\nLeft, right, select\n';
       colorChoicesWhite.forEach(r => {
         csv += `${r.left},${r.right},${r.choice}\n`;
       });
@@ -370,7 +380,7 @@
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "問卷結果.csv";
+      link.download = "Questionnaire results.csv";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
