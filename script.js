@@ -3,3 +3,5 @@ const colorPairs = [
     { left: { text: 'BLACK', bg: 'yellow', color: 'black' }, right: { text: 'BLACK', bg: 'green', color: 'black' } }
   ];
   
+
+  
